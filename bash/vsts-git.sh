@@ -1,6 +1,3 @@
-info() { echo "$@"; }
-err() { echo "$@" >&2; }
-
 function vstsCloneRepo() {
 
     [[ -z $1 ]] && local vsts_organization=$VSTS_ORGANIZATION || local vsts_organization=$1
