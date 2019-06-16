@@ -1,4 +1,4 @@
-function configureGitLocalRepo {
+function configureGitLocalRepo() {
 
     if [[ -z $GIT_LOCALREPO_PATH ]]
     then
@@ -6,6 +6,7 @@ function configureGitLocalRepo {
         return 1
     fi
 
+    echo "Configuring git repository"
     mkdir -p $GIT_LOCALREPO_PATH
 
     git -C $GIT_LOCALREPO_PATH config user.email $GIT_USER_EMAIL
