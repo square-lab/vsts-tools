@@ -18,6 +18,7 @@ function configureGitLocalRepo() {
         git -C $GIT_LOCALREPO_PATH config http.extraheader "Authorization: Basic ${auth_token}"
     fi   
 }    
+
 function vstsCloneRepo() {
 
     if [[ -z $VSTS_ORGANIZATION || -z $VSTS_PROJECT || -z $VSTS_GIT_REPO ]]
@@ -28,7 +29,7 @@ function vstsCloneRepo() {
     local gitrepo_url="https://dev.azure.com/${VSTS_ORGANIZATION}/${VSTS_PROJECT}/_git/${VSTS_GIT_REPO}"
     
     echo "Cloning git repository ${gitrepo_url}"
-    git clone $gitrepo_url $GIT_LOCALREPO_PATH &> /dev/null
+    git -C $GIT_LOCALREPO_PATH clone $gitrepo_url $GIT_LOCALREPO_PATH &> /dev/null
 }
 
 function vstsUploadChanges() {
