@@ -1,19 +1,38 @@
+function configureGitLocalRepo {
+
+    if [[ -z $GIT_LOCALREPO_PATH ]]
+    then
+        echo "git: missing environment variables" >&2
+        return 1
+    fi
+
+    mkdir -p $GIT_LOCALREPO_PATH
+
+    git -C $GIT_LOCALREPO_PATH config user.email $GIT_USER_EMAIL
+    git -C $GIT_LOCALREPO_PATH config user.name $GIT_USER_NAME
+
+    if [[ -n $VSTS_PAT ]]
+    then
+        local auth_token=$(echo -n ":${VSTS_PAT}" | openssl base64 | tr -d '\n')
+        git -C $GIT_LOCALREPO_PATH config http.extraheader "Authorization: Basic ${auth_token}"
+    fi   
+}    
 function vstsCloneRepo() {
 
-    [[ -z $1 ]] && local vsts_organization=$VSTS_ORGANIZATION || local vsts_organization=$1
-    [[ -z $2 ]] && local vsts_project=$VSTS_PROJECT || local vsts_project=$2
-    [[ -z $3 ]] && local vsts_git_repo=$VSTS_GIT_REPO || local vsts_git_repo=$3
-    [[ -z $4 ]] && local localrepo_path=$LOCALREPO_PATH || local localrepo_path=$4
-
-    if [[ -z $vsts_organization || -z $vsts_project || -z $vsts_organization ]]
+    if [[ -z $VSTS_ORGANIZATION || -z $VSTS_PROJECT || -z $VSTS_GIT_REPO ]]
     then
         echo "vsts: missing environment variables" >&2
         return 1
     fi
+    local gitrepo_url="https://dev.azure.com/${VSTS_ORGANIZATION}/${VSTS_PROJECT}/_git/${VSTS_GIT_REPO}"
+    
+    echo "Cloning git repository ${gitrepo_url}"
+    git clone $gitrepo_url $GIT_LOCALREPO_PATH &> /dev/null
+}
 
-    local REPO_URL=https://dev.azure.com/$vsts_organization/$vsts_project/_git/$vsts_git_repo
-    local AUTH=$(echo -n ":$VSTS_PAT" | openssl base64 | tr -d '\n')
-
-    echo "Cloning git repository ${REPO_URL}"
-    git -c http.extraheader="Authorization: Basic $AUTH" clone $REPO_URL $localrepo_path &> /dev/null
+function vstsUploadChanges() {
+   
+    echo "Updating git"
+    git -C $GIT_LOCALREPO_PATH commit -am $1 &> /dev/null
+    git -C $GIT_LOCALREPO_PATH push &> /dev/null
 }
