@@ -9,6 +9,7 @@ function configureGitLocalRepo() {
     echo "Configuring git repository"
     mkdir -p $GIT_LOCALREPO_PATH
 
+    git -C $GIT_LOCALREPO_PATH init &> /dev/null
     git -C $GIT_LOCALREPO_PATH config user.email $GIT_USER_EMAIL
     git -C $GIT_LOCALREPO_PATH config user.name $GIT_USER_NAME
 
@@ -29,7 +30,9 @@ function vstsCloneRepo() {
     local gitrepo_url="https://dev.azure.com/${VSTS_ORGANIZATION}/${VSTS_PROJECT}/_git/${VSTS_GIT_REPO}"
     
     echo "Cloning git repository ${gitrepo_url}"
-    git -C $GIT_LOCALREPO_PATH clone $gitrepo_url $GIT_LOCALREPO_PATH &> /dev/null
+    git -C $GIT_LOCALREPO_PATH remote add origin $gitrepo_url &> /dev/null
+    git -C $CLUSTERINFO_PATH fetch origin &> /dev/null
+    git -C $CLUSTERINFO_PATH checkout master &> /dev/null
 }
 
 function vstsUploadChanges() {
