@@ -14,6 +14,6 @@ function vstsCloneRepo() {
     local REPO_URL=https://dev.azure.com/$vsts_organization/$vsts_project/_git/$vsts_git_repo
     local AUTH=$(echo -n ":$VSTS_PAT" | openssl base64 | tr -d '\n')
 
-    echo "Cloning ${REPO_URL}"
+    echo "Cloning git repository ${REPO_URL}"
     git -c http.extraheader="Authorization: Basic $AUTH" clone $REPO_URL $localrepo_path &> /dev/null
 }
