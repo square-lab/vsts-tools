@@ -37,6 +37,8 @@ function vstsCloneRepo() {
 
 function vstsUploadChanges() {
    
+    if [[ $(git -C $GIT_LOCALREPO_PATH status --porcelain) ]]; then return 0; fi
+
     echo "Updating git"
     git -C $GIT_LOCALREPO_PATH commit -am $1 &> /dev/null
     git -C $GIT_LOCALREPO_PATH push &> /dev/null
