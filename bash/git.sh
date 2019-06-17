@@ -11,7 +11,7 @@ function configureGitLocalRepo() {
     echo "Configuring git repository"
     mkdir -p $GIT_LOCALREPO_PATH
 
-    git -C $GIT_LOCALREPO_PATH init > /dev/null
+    git -C $GIT_LOCALREPO_PATH init
     git -C $GIT_LOCALREPO_PATH config user.email $GIT_USER_EMAIL
     git -C $GIT_LOCALREPO_PATH config user.name $GIT_USER_NAME 
 }    

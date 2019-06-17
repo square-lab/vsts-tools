@@ -16,9 +16,8 @@ function vstsCloneRepo() {
     local gitrepo_url="https://dev.azure.com/${VSTS_ORGANIZATION}/${VSTS_PROJECT}/_git/${VSTS_GIT_REPO}"
     
     echo "Cloning git repository ${gitrepo_url}"
-    git -C $GIT_LOCALREPO_PATH remote add origin $gitrepo_url > /dev/null
-    git -C $GIT_LOCALREPO_PATH fetch origin > /dev/null
-    git -C $GIT_LOCALREPO_PATH checkout master > /dev/null
+    git -C $GIT_LOCALREPO_PATH remote add origin $gitrepo_url -f
+    git -C $GIT_LOCALREPO_PATH checkout master
 }
 
 function vstsUploadChanges() {
@@ -27,6 +26,6 @@ function vstsUploadChanges() {
 
     echo "Updating git"
     git -C $GIT_LOCALREPO_PATH add -A
-    git -C $GIT_LOCALREPO_PATH commit -am "$1" > /dev/null
-    git -C $GIT_LOCALREPO_PATH push > /dev/null
+    git -C $GIT_LOCALREPO_PATH commit -am "$1"
+    git -C $GIT_LOCALREPO_PATH push
 }
